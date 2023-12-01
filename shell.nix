@@ -4,5 +4,7 @@ pkgs.mkShell {
   nativeBuildInputs = with pkgs; [
     dotnet-sdk_7
     fsautocomplete
+    ghc
+    haskell-language-server
   ];
 }
