@@ -1,5 +1,6 @@
 import Data.Char
 import Data.List
+import Control.Monad
 
 solve1 = sum . map auxiliary
   where
@@ -33,19 +34,16 @@ toNum "eight" = '8'
 toNum "nine" = '9'
 toNum [a] = a 
 
+findThePattern p = findPattern p <=< (find (isPatternMatch p) . tails)
+
 solve2 = sum . map auxiliary
   where
     auxiliary input = read $ map toNum [first_digit, last_digit] :: Int
       where
-        Just first_digit =
-          (>>= findPattern patterns)
-          $ find (isPatternMatch patterns)
-          $ tails input
+        Just first_digit = findThePattern patterns input
         Just last_digit =
           fmap reverse
-          $ (>>= findPattern reversedPatterns)
-          $ find (isPatternMatch reversedPatterns)
-          $ tails
+          $ findThePattern reversedPatterns
           $ reverse input
 
 part2 path = solve2 . lines <$> readFile path
