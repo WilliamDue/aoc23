@@ -1,7 +1,0 @@
-(undo-tree-save-format-version . 1)
-"4fa42c96bc0afa7f4fe075e513f64847fc7a00f8"
-[nil nil nil nil (25961 35970 808282 429000) 0 nil]
-([nil nil ((1 . 41) (t . -1)) nil (25961 35970 808279 239000) 0 nil])
-([nil nil ((1 . 2) (t 25961 35970 811073 839000)) nil (25961 35986 310683 545000) 0 nil])
-([nil current ((42 . 43)) nil (25961 35986 310680 145000) 0 nil])
-nil
