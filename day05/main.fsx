@@ -6,7 +6,7 @@ let rx = Regex(@"[0-9]+", RegexOptions.Compiled)
 let findInts str =
   seq {
     for m in rx.Matches(str) do
-      yield (bigint (uint64 m.Value))
+      yield (uint64 m.Value)
   }
 
 let parseMap (str : string) =
@@ -54,40 +54,36 @@ let rec findMapping n ls =
         | None -> findMapping n xs
         | Some v -> v
 
-let (seeds,  maps) = input
+let (seeds, maps) = input
 
 let findLocation seed = List.fold findMapping seed maps
 
 seeds
 |> List.map findLocation
 |> List.min
-|> printfn "Part 1: %A" 
+|> printfn "Part 1: %A"
 
-let maps' = List.rev maps
+let newRange (a, b) (dest, src, range) =
+  let lower = max a src
+  let upper = min (a + b) (src + range)
+  let m = if lower < a then [] else [(lower - a, lower)]
+  let n = if upper < a + b then [] else [((a + b) - upper, upper)]
+  let t = if upper <= lower then [] else [(dest + (lower - src), upper - lower)]
+  m @ n @ t
 
-let useMapping' n (dest, src, range) =
-  if dest <= n && n < dest + range
-  then src + (n - dest) |> Some
-  else None
-
-let rec findMapping' n ls =
-  match ls with
-    | [] -> n
-    | x::xs ->
-      match useMapping' n x with
-        | None -> findMapping' n xs
-        | Some v -> v
+let rec findMapping' ns ls =
+  List.collect (fun n -> List.collect (newRange n) ls) ns
 
 let new_seeds =
-  List.chunkBySize 2 seeds
-  |> List.map (fun a -> (a.[0], a.[1]))
+  seeds
+  |> List.chunkBySize 2
+  |> List.map (fun a -> (a.[0], a[1]))
 
-let isSeed seed =
-  List.exists (fun (a, b) -> a <= seed && seed < a + b) new_seeds
-  
-let findSeed loc = List.fold findMapping' loc maps'
+let findLocations seeds' = List.fold findMapping' seeds' maps
 
-seq { 10000000UL .. 100000000UL }
-|> Seq.map (findSeed << bigint)
-|> Seq.tryFind isSeed
+new_seeds
+|> findLocations
 |> printfn "%A"
+
+printfn "%A" (79, 79 + 14)
+printfn "%A" (50, 50 + 48)
